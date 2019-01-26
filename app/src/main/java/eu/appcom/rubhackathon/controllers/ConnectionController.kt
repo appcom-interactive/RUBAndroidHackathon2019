@@ -1,14 +1,17 @@
 package eu.appcom.rubhackathon.controllers
 
-import com.google.android.gms.nearby.connection.ConnectionLifecycleCallback
-import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback
 import io.reactivex.Completable
+import io.reactivex.Observable
 
 /*
  * Created by appcom interactive GmbH on 26.01.19.
  * Copyright © 2019 appcom interactive GmbH. All rights reserved.
  */
 interface ConnectionController {
+
+  fun observeStatus(): Observable<Boolean>
+
+  fun observePayload(): Observable<String>
 
   fun startAdvertising(): Completable
 

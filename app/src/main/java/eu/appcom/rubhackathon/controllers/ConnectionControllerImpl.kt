@@ -17,6 +17,7 @@ import com.google.android.gms.nearby.connection.PayloadTransferUpdate
 import com.google.android.gms.nearby.connection.Strategy
 import eu.appcom.rubhackathon.BuildConfig
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import timber.log.Timber
 import javax.inject.Inject
@@ -30,17 +31,33 @@ class ConnectionControllerImpl @Inject constructor() : ConnectionController {
   @Inject @field:Named("application") lateinit var context: Context
 
   private var connectedEndpointId = ""
+  private var isAdvertising = false
+  private var isDiscovery = false
+  private var statusSubject: BehaviorSubject<Boolean> = BehaviorSubject.create()
+  private var payloadSubject: BehaviorSubject<String> = BehaviorSubject.create()
 
-  private var subject: BehaviorSubject<String> = BehaviorSubject.create()
+  override fun observeStatus(): Observable<Boolean> {
+    return statusSubject
+  }
+
+  override fun observePayload(): Observable<String> {
+    return payloadSubject
+  }
 
   override fun startAdvertising(): Completable {
     return Completable.create { emitter ->
-      Timber.d("Start advertising")
-      AdvertisingOptions.Builder().setStrategy(Strategy.P2P_STAR).build().let {
-        Nearby.getConnectionsClient(context)
-          .startAdvertising(Build.DEVICE, BuildConfig.APPLICATION_ID, connectionLifecycleCallback, it)
-          .addOnSuccessListener { emitter.onComplete() }
-          .addOnFailureListener { e: Exception -> emitter.onError(e) }
+      if (!isAdvertising) {
+        if (isDiscovery) {
+          stopDiscovery().blockingAwait()
+        }
+        isAdvertising = true
+        Timber.d("Start advertising")
+        AdvertisingOptions.Builder().setStrategy(Strategy.P2P_STAR).build().let {
+          Nearby.getConnectionsClient(context)
+            .startAdvertising(Build.DEVICE, BuildConfig.APPLICATION_ID, connectionLifecycleCallback, it)
+            .addOnSuccessListener { emitter.onComplete() }
+            .addOnFailureListener { e: Exception -> emitter.onError(e) }
+        }
       }
     }
   }
@@ -48,19 +65,25 @@ class ConnectionControllerImpl @Inject constructor() : ConnectionController {
   override fun stopAdvertising(): Completable {
     return Completable.fromCallable {
       Timber.d("Stop advertising")
+      isAdvertising = false
       Nearby.getConnectionsClient(context).stopAdvertising()
     }
   }
 
   override fun startDiscovery(): Completable {
     return Completable.create { emitter ->
-      Timber.d("Start discovery")
-      DiscoveryOptions.Builder().setStrategy(Strategy.P2P_STAR).build().let {
-        Nearby.getConnectionsClient(context)
-          .startDiscovery(BuildConfig.APPLICATION_ID, endpointDiscoveryCallback, it)
-          .addOnSuccessListener { emitter.onComplete() }
-          .addOnFailureListener { e: java.lang.Exception -> emitter.onError(e) }
-
+      if (!isDiscovery) {
+        if (isAdvertising) {
+          stopAdvertising().blockingAwait()
+        }
+        isDiscovery = true
+        Timber.d("Start discovery")
+        DiscoveryOptions.Builder().setStrategy(Strategy.P2P_STAR).build().let {
+          Nearby.getConnectionsClient(context)
+            .startDiscovery(BuildConfig.APPLICATION_ID, endpointDiscoveryCallback, it)
+            .addOnSuccessListener { emitter.onComplete() }
+            .addOnFailureListener { e: java.lang.Exception -> emitter.onError(e) }
+        }
       }
     }
   }
@@ -68,6 +91,7 @@ class ConnectionControllerImpl @Inject constructor() : ConnectionController {
   override fun stopDiscovery(): Completable {
     return Completable.fromCallable {
       Timber.d("Stop discovery")
+      isDiscovery = false
       Nearby.getConnectionsClient(context).stopDiscovery()
     }
   }
@@ -75,7 +99,7 @@ class ConnectionControllerImpl @Inject constructor() : ConnectionController {
   override fun sendPayload(message: String): Completable {
     return Completable.fromCallable {
       Nearby.getConnectionsClient(context)
-        .sendPayload(connectedEndpointId, Payload.fromBytes(message.toByteArray()));
+        .sendPayload(connectedEndpointId, Payload.fromBytes(message.toByteArray()))
     }
   }
 
@@ -107,20 +131,20 @@ class ConnectionControllerImpl @Inject constructor() : ConnectionController {
     }
 
     override fun onConnectionResult(endpointId: String, result: ConnectionResolution) {
-      when (result.status.statusCode) {
-        ConnectionsStatusCodes.STATUS_OK -> {
-          // We're connected! Can now start sending and receiving data.
-          connectedEndpointId = endpointId
-          Timber.d("ConnectionLifecycleCallback successfull")
-          sendPayload("test").subscribe()
+      if (result.status.statusCode == ConnectionsStatusCodes.STATUS_OK) {
+        // We're connected! Can now start sending and receiving data.
+        if (isDiscovery) {
+          isDiscovery = false
+          stopDiscovery().subscribe()
+        } else if (isAdvertising) {
+          isAdvertising = false
+          stopAdvertising().subscribe()
         }
-        ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED -> {
-          // The connection was rejected by one or both sides.
-        }
-        ConnectionsStatusCodes.STATUS_ERROR -> {
-          // The connection broke before it was able to be accepted.
-        }
-        // Unknown status code
+        connectedEndpointId = endpointId
+        Timber.d("ConnectionLifecycleCallback successfull")
+        statusSubject.onNext(true)
+      } else {
+        statusSubject.onNext(false)
       }
     }
 
@@ -128,13 +152,18 @@ class ConnectionControllerImpl @Inject constructor() : ConnectionController {
       // We've been disconnected from this endpoint. No more data can be
       // sent or received.
       Timber.d("onDisconnected")
+      statusSubject.onNext(false)
     }
   }
 
   private val payloadCallback = object : PayloadCallback() {
     override fun onPayloadReceived(endpointId: String, payload: Payload) {
       Timber.d("Payload received")
-      // A new payload is being sent over.
+      payload.asBytes()?.let {
+        if (it.isNotEmpty()) {
+          payloadSubject.onNext(String(it))
+        }
+      }
     }
 
     override fun onPayloadTransferUpdate(endpointId: String, update: PayloadTransferUpdate) {
