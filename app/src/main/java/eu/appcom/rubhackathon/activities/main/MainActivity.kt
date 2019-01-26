@@ -10,8 +10,7 @@ import eu.appcom.rubhackathon.extensions.launchActivity
 import eu.appcom.rubhackathon.extensions.onClick
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_main.main_game_button
-import kotlinx.android.synthetic.main.activity_main.main_toolbar
+import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 import javax.inject.Inject
 
