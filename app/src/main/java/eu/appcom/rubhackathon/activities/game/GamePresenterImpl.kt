@@ -62,13 +62,13 @@ class GamePresenterImpl @Inject constructor() : BasePresenterImpl(), GameContrac
   }
 
   private fun checkNoise(noise: Int) {
-    Timber.d("noise: $noise")
+//    Timber.d("noise: $noise")
     if (noise > 25000) {
       Timber.d("up")
-      view.up()
+      view.down()
     } else if (noise in 5001..9999) {
       Timber.d("down")
-      view.down()
+      view.up()
     }
   }
 
@@ -76,9 +76,9 @@ class GamePresenterImpl @Inject constructor() : BasePresenterImpl(), GameContrac
     val option = commandController.translate(text)
     Timber.d("action $option")
     if (option == 0) {
-      view.up()
-    } else if (option == 1) {
       view.down()
+    } else if (option == 1) {
+      view.up()
     }
   }
 
