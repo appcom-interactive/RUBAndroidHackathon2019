@@ -9,16 +9,15 @@ import eu.appcom.rubhackathon.base.BaseContract
 import eu.appcom.rubhackathon.controllers.ConnectionController
 import eu.appcom.rubhackathon.extensions.launchActivity
 import eu.appcom.rubhackathon.extensions.onClick
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
-import timber.log.Timber
 import javax.inject.Inject
 
 class MainActivity : BaseActivity(), MainContract.MainView {
 
-  @Inject lateinit var presenter: MainContract.MainPresenter
-  @Inject lateinit var connectionController: ConnectionController
+  @Inject
+  lateinit var presenter: MainContract.MainPresenter
+  @Inject
+  lateinit var connectionController: ConnectionController
 
   override fun providePresenter(): BaseContract.BasePresenter = presenter
 
@@ -35,6 +34,10 @@ class MainActivity : BaseActivity(), MainContract.MainView {
 
     main_control_button.onClick {
       launchActivity<ControlActivity> { }
+    }
+
+    main_settings_button.onClick {
+
     }
   }
 }

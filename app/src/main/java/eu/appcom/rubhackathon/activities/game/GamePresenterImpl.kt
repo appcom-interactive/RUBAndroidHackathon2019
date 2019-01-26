@@ -1,12 +1,10 @@
 package eu.appcom.rubhackathon.activities.game
 
-import android.annotation.SuppressLint
-import androidx.lifecycle.Lifecycle.Event.ON_CREATE
-import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import eu.appcom.rubhackathon.base.BasePresenterImpl
-import eu.appcom.rubhackathon.controllers.FirebaseDatabaseController
 import eu.appcom.rubhackathon.controllers.CommandController
+import eu.appcom.rubhackathon.controllers.FirebaseDatabaseController
 import eu.appcom.rubhackathon.controllers.SpeechController
 import timber.log.Timber
 import javax.inject.Inject
@@ -26,16 +24,16 @@ class GamePresenterImpl @Inject constructor() : BasePresenterImpl(), GameContrac
   @Inject
   lateinit var firebaseDatabaseController: FirebaseDatabaseController
 
- @SuppressLint("CheckResult")
- @OnLifecycleEvent(ON_CREATE)
- fun subscribeToCommandsValues(){
-   firebaseDatabaseController.getCommand()
-   firebaseDatabaseController.observe().subscribe{
-     executeCommand(it)
-   }
- }
+//  @SuppressLint("CheckResult")
+//  @OnLifecycleEvent(ON_CREATE)
+//  fun subscribeToCommandsValues() {
+//    firebaseDatabaseController.getCommand()
+//    firebaseDatabaseController.observe().subscribe {
+//      executeCommand(it)
+//    }
+//  }
 
-  fun executeCommand(action: String){
+  fun executeCommand(action: String) {
     view.showCommand(action)
   }
 
