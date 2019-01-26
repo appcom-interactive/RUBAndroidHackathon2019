@@ -1,7 +1,6 @@
 package eu.appcom.rubhackathon.activities.control
 
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.OnLifecycleEvent
+import android.annotation.SuppressLint
 import eu.appcom.rubhackathon.base.BasePresenterImpl
 import eu.appcom.rubhackathon.controllers.CommandController
 import eu.appcom.rubhackathon.controllers.FirebaseDatabaseController
@@ -23,12 +22,6 @@ class ControlPresenterImpl @Inject constructor() : BasePresenterImpl(), ControlC
   @Inject
   lateinit var firebaseDatabaseController: FirebaseDatabaseController
 
-  @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-  fun addFirebaseValue(){
-    firebaseDatabaseController.connectToDatabase()
-    firebaseDatabaseController.saveCommand("")
-  }
-
   @Inject
   lateinit var commandController: CommandController
 
@@ -37,11 +30,15 @@ class ControlPresenterImpl @Inject constructor() : BasePresenterImpl(), ControlC
     view.setText(text)
   }
 
+  @SuppressLint("CheckResult")
   override fun startSpeechRecognizer() {
     if (speechController.isRecognitionAvailable) {
       speechController.startSpeechRecognizer()
 
-      speechController.observe().subscribe { passToView(it) }
+      speechController.observe().subscribe {
+        firebaseDatabaseController.saveCommand(it)
+        passToView(it)
+      }
     }
   }
 

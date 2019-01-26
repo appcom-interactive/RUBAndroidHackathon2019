@@ -8,7 +8,9 @@ import eu.appcom.rubhackathon.base.BaseContract
  */
 interface GameContract {
 
-  interface GameView : BaseContract.BaseView
+  interface GameView : BaseContract.BaseView {
+    fun showCommand(action:String)
+  }
 
   interface GamePresenter : BaseContract.BasePresenter
 }

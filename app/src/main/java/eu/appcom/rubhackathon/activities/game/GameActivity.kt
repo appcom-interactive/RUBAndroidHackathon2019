@@ -1,6 +1,7 @@
 package eu.appcom.rubhackathon.activities.game
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import eu.appcom.rubhackathon.R
 import eu.appcom.rubhackathon.base.BaseActivity
 import eu.appcom.rubhackathon.base.BaseContract
@@ -27,5 +28,9 @@ class GameActivity : BaseActivity(), GameContract.GameView {
     game_webview.settings.javaScriptEnabled = true
 //    game_webview.settings.domStorageEnabled = true
     game_webview.loadUrl("file:///android_asset/game/index.html")
+  }
+
+  override fun showCommand(action: String) {
+    Toast.makeText(this, action, Toast.LENGTH_SHORT).show()
   }
 }

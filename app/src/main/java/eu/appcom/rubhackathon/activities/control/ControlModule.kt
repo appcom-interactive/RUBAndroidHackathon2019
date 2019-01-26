@@ -19,7 +19,6 @@ object ControlModule {
   internal fun provideActivity(view: ControlActivity): BaseActivity = view
 
   @JvmStatic
-
   @Provides
   @PerActivity
   internal fun provideControlView(view: ControlActivity): ControlContract.ControlView = view
