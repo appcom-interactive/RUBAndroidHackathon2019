@@ -35,17 +35,8 @@ class GamePresenterImpl @Inject constructor() : BasePresenterImpl(), GameContrac
   }
 
   fun executeCommand(action: String) {
-//    view.showCommand(action)
     act(action)
   }
-
-//  @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-//  fun init() {
-//    if (speechController.isRecognitionAvailable) {
-//      speechController.startSpeechRecognizer()
-//      speechController.observe().subscribe(this::act)
-//    }
-//  }
 
   private fun act(text: String) {
     val option = commandController.translate(text)

@@ -37,11 +37,11 @@ class GameActivity : BaseActivity(), GameContract.GameView {
   }
 
   override fun up() {
-    game_webview.evaluateJavascript("javascript: up()", null)
+    game_webview.evaluateJavascript("javascript: down()", null)
   }
 
   override fun down() {
-    game_webview.evaluateJavascript("javascript: down()", null)
+    game_webview.evaluateJavascript("javascript: up()", null)
   }
 
   override fun showCommand(action: String) {
