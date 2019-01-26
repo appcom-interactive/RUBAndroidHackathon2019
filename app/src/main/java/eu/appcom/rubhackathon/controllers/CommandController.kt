@@ -15,4 +15,6 @@ interface CommandController {
   fun duckPokey()
 
   fun doAction(text: String)
+
+  fun translate(text: String): Int
 }
