@@ -13,7 +13,7 @@ import javax.inject.Singleton
  * Created by appcom interactive GmbH on 26.01.19.
  * Copyright © 2019 appcom interactive GmbH. All rights reserved.
  */
-@Module(includes = [AndroidSupportInjectionModule::class])
+@Module(includes = [AndroidSupportInjectionModule::class, ActivityBuilder::class])
 object ApplicationModule {
 
   @JvmStatic
