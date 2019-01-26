@@ -10,5 +10,9 @@ interface MainContract {
 
   interface MainView : BaseContract.BaseView
 
-  interface MainPresenter : BaseContract.BasePresenter
+  interface MainPresenter : BaseContract.BasePresenter {
+    fun startSpeechRecognizer()
+
+    fun stopSpeechRecognizer()
+  }
 }

@@ -3,6 +3,7 @@ package eu.appcom.rubhackathon.activities.main
 import dagger.Module
 import dagger.Provides
 import eu.appcom.rubhackathon.annotations.PerActivity
+import eu.appcom.rubhackathon.base.BaseActivity
 import eu.appcom.rubhackathon.di.ActivityModule
 
 /**
@@ -11,6 +12,11 @@ import eu.appcom.rubhackathon.di.ActivityModule
  */
 @Module(includes = [ActivityModule::class])
 object MainModule {
+
+  @JvmStatic
+  @Provides
+  @PerActivity
+  internal fun provideActivity(view: MainActivity): BaseActivity = view
 
   @JvmStatic
   @Provides
