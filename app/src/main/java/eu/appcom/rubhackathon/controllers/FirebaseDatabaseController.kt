@@ -1,0 +1,12 @@
+package eu.appcom.rubhackathon.controllers
+
+/*
+ * Created by appcom interactive GmbH on 26.01.19.
+ * Copyright © 2019 appcom interactive GmbH. All rights reserved.
+ */
+interface FirebaseDatabaseController {
+
+  fun connectToDatabase()
+
+  fun saveCommand(action: String)
+}

@@ -1,7 +1,10 @@
 package eu.appcom.rubhackathon.activities.control
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import eu.appcom.rubhackathon.base.BasePresenterImpl
 import eu.appcom.rubhackathon.controllers.CommandController
+import eu.appcom.rubhackathon.controllers.FirebaseDatabaseController
 import eu.appcom.rubhackathon.controllers.SpeechController
 import javax.inject.Inject
 
@@ -16,6 +19,14 @@ class ControlPresenterImpl @Inject constructor() : BasePresenterImpl(), ControlC
 
   @Inject
   lateinit var speechController: SpeechController
+
+  @Inject
+  lateinit var firebaseDatabaseController: FirebaseDatabaseController
+
+  @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+  fun addFirebaseValue(){
+    firebaseDatabaseController.connectToDatabase()
+  }
 
   @Inject
   lateinit var commandController: CommandController
