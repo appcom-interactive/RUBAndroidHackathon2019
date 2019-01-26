@@ -1,4 +1,4 @@
-package eu.appcom.rubhackathon.activities.game
+package eu.appcom.rubhackathon.activities.control
 
 import dagger.Module
 import dagger.Provides
@@ -6,25 +6,25 @@ import eu.appcom.rubhackathon.annotations.PerActivity
 import eu.appcom.rubhackathon.base.BaseActivity
 import eu.appcom.rubhackathon.di.ActivityModule
 
-/**
+/*
  * Created by appcom interactive GmbH on 26.01.19.
  * Copyright © 2019 appcom interactive GmbH. All rights reserved.
  */
 @Module(includes = [ActivityModule::class])
-object GameModule {
+object ControlModule {
 
   @JvmStatic
   @Provides
   @PerActivity
-  internal fun provideBaseActivity(activity: GameActivity): BaseActivity = activity
+  internal fun provideActivity(view: ControlActivity): BaseActivity = view
 
   @JvmStatic
   @Provides
   @PerActivity
-  internal fun provideView(activity: GameActivity): GameContract.GameView = activity
+  internal fun provideControlView(view: ControlActivity): ControlContract.ControlView = view
 
   @JvmStatic
   @Provides
   @PerActivity
-  internal fun provideGamePresenter(presenterImpl: GamePresenterImpl): GameContract.GamePresenter = presenterImpl
+  internal fun provideControlPresenter(presenter: ControlPresenterImpl): ControlContract.ControlPresenter = presenter
 }

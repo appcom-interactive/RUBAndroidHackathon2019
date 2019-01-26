@@ -5,12 +5,7 @@ import dagger.Binds
 import dagger.Module
 import eu.appcom.rubhackathon.annotations.PerActivity
 import eu.appcom.rubhackathon.base.BaseActivity
-import eu.appcom.rubhackathon.controllers.ConnectionController
-import eu.appcom.rubhackathon.controllers.ConnectionControllerImpl
-import eu.appcom.rubhackathon.controllers.CommandController
-import eu.appcom.rubhackathon.controllers.CommandControllerImpl
-import eu.appcom.rubhackathon.controllers.SpeechController
-import eu.appcom.rubhackathon.controllers.SpeechControllerImpl
+import eu.appcom.rubhackathon.controllers.*
 import eu.appcom.rubhackathon.utils.Constants.ACTIVITY
 import javax.inject.Named
 
@@ -38,8 +33,11 @@ abstract class ControllerModule {
   @PerActivity
   abstract fun bindSpeechController(speechControllerImpl: SpeechControllerImpl): SpeechController
 
+  @Binds
+  @PerActivity
+  abstract fun bindConnectionController(connectionControllerImpl: ConnectionControllerImpl): ConnectionController
 
   @Binds
   @PerActivity
-  abstract fun bindBluetoothController(speechControllerImpl: ConnectionControllerImpl): ConnectionController
+  abstract fun bindFirebaseDatabaseController(firebaseDatabaseControllerImpl: FirebaseDatabaseControllerImpl): FirebaseDatabaseController
 }

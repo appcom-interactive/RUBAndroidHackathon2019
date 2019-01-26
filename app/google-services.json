@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "694943460222",
+    "firebase_url": "https://rubandroidhackathon2019.firebaseio.com",
+    "project_id": "rubandroidhackathon2019",
+    "storage_bucket": "rubandroidhackathon2019.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:694943460222:android:040cea4531c2fc57",
+        "android_client_info": {
+          "package_name": "eu.appcom.rubhackathon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "694943460222-nj4d3b9j5ab3ea9j36ufoj0ij14i26kc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "eu.appcom.rubhackathon",
+            "certificate_hash": "d858e6b7f695dd7685252f0ed3428f6353820118"
+          }
+        },
+        {
+          "client_id": "694943460222-0kc8s1fipko5059g0dkco4pe32cbto5v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLgS3tuvRFbwV1yxIY5zVuffo9zP53dt4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "694943460222-0kc8s1fipko5059g0dkco4pe32cbto5v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

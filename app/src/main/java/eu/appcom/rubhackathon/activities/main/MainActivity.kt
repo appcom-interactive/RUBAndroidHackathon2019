@@ -2,17 +2,17 @@ package eu.appcom.rubhackathon.activities.main
 
 import android.os.Bundle
 import eu.appcom.rubhackathon.R
+import eu.appcom.rubhackathon.activities.control.ControlActivity
 import eu.appcom.rubhackathon.activities.game.GameActivity
 import eu.appcom.rubhackathon.base.BaseActivity
 import eu.appcom.rubhackathon.base.BaseContract
 import eu.appcom.rubhackathon.controllers.ConnectionController
 import eu.appcom.rubhackathon.extensions.launchActivity
 import eu.appcom.rubhackathon.extensions.onClick
-import kotlinx.android.synthetic.main.activity_main.main_game_button
-import kotlinx.android.synthetic.main.activity_main.main_toolbar
-import kotlinx.android.synthetic.main.activity_main.stop_button
-import kotlinx.android.synthetic.main.activity_main.talk_button
-import kotlinx.android.synthetic.main.activity_main.textView
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_main.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class MainActivity : BaseActivity(), MainContract.MainView {
@@ -32,20 +32,9 @@ class MainActivity : BaseActivity(), MainContract.MainView {
     main_game_button.onClick {
       launchActivity<GameActivity> {}
     }
-  }
 
-  override fun onResume() {
-    super.onResume()
-    talk_button.setOnClickListener {
-      presenter.startSpeechRecognizer()
+    main_control_button.onClick {
+      launchActivity<ControlActivity> { }
     }
-
-    stop_button.setOnClickListener {
-      presenter.stopSpeechRecognizer()
-    }
-  }
-
-  override fun setText(action: String) {
-    textView.text = action
   }
 }

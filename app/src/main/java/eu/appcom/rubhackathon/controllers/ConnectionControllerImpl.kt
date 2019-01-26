@@ -28,6 +28,7 @@ import javax.inject.Named
 class ConnectionControllerImpl @Inject constructor() : ConnectionController {
 
   @Inject @field:Named("application") lateinit var context: Context
+
   private var connectedEndpointId = ""
 
   private var subject: BehaviorSubject<String> = BehaviorSubject.create()

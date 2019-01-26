@@ -9,6 +9,16 @@ import javax.inject.Inject
  */
 class CommandControllerImpl @Inject constructor() : CommandController {
 
+  override fun translate(text: String): Int = when (text.toLowerCase()) {
+    "down" -> 1
+    "hoch" -> 1
+    "1" -> 1
+    "0" -> 0
+    "test" -> 0
+    "runter" -> 0
+    else -> -1
+  }
+
   override fun doAction(text: String) = when (text.toLowerCase()) {
     "faster" -> moveFasterPokey()
     "slower" -> moveSlowerPokey()
