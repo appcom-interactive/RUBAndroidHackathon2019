@@ -8,7 +8,9 @@ import eu.appcom.rubhackathon.base.BaseContract
  */
 interface MainContract {
 
-  interface MainView : BaseContract.BaseView
+  interface MainView : BaseContract.BaseView {
+    fun setText(action: String)
+  }
 
   interface MainPresenter : BaseContract.BasePresenter {
     fun startSpeechRecognizer()

@@ -8,6 +8,8 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.SpeechRecognizer.RESULTS_RECOGNITION
 import eu.appcom.rubhackathon.utils.Constants.ACTIVITY
+import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -22,6 +24,8 @@ class SpeechControllerImpl @Inject constructor() : SpeechController, Recognition
   companion object {
     const val MAX_RESULTS = 5
   }
+
+  private lateinit var subject: BehaviorSubject<String>
 
   private lateinit var speechRecognizer: SpeechRecognizer
 
@@ -39,6 +43,8 @@ class SpeechControllerImpl @Inject constructor() : SpeechController, Recognition
   override fun startSpeechRecognizer() {
     speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
     speechRecognizer.setRecognitionListener(this)
+
+    subject = BehaviorSubject.create()
 
     startListing()
 
@@ -59,11 +65,12 @@ class SpeechControllerImpl @Inject constructor() : SpeechController, Recognition
     speechRecognizer.startListening(intent)
   }
 
+  override fun observe(): Observable<String> = subject
+
   override fun stopSpeechRecognizer() {
     speechRecognizer.stopListening()
     speechRecognizer.destroy()
   }
-
 
   override fun onReadyForSpeech(params: Bundle?) {
     // Timber.d("SpeechRecongnizer onReadyForSpeech %s", params.toString())
@@ -92,10 +99,16 @@ class SpeechControllerImpl @Inject constructor() : SpeechController, Recognition
       val beforeItem = list[list.lastIndex - 1]
       if (lastItem != beforeItem) {
         Timber.d("action: $lastItem")
+        send(lastItem)
       }
     } else {
       Timber.d("action: $lastItem")
+      send(lastItem)
     }
+  }
+
+  private fun send(text: String) {
+    subject.onNext(text)
   }
 
   override fun onEvent(eventType: Int, params: Bundle?) {

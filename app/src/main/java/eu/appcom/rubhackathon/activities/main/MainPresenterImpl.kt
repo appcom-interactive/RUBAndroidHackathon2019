@@ -12,9 +12,14 @@ class MainPresenterImpl @Inject constructor() : BasePresenterImpl(), MainContrac
 
   @Inject lateinit var speechController: SpeechController
 
+  @Inject
+  lateinit var view: MainContract.MainView
+
   override fun startSpeechRecognizer() {
     if(speechController.isRecognitionAvailable){
       speechController.startSpeechRecognizer()
+
+      speechController.observe().subscribe(view::setText)
     }
   }
 

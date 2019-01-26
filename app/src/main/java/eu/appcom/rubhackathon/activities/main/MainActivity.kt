@@ -39,4 +39,8 @@ class MainActivity : BaseActivity(), MainContract.MainView {
       presenter.stopSpeechRecognizer()
     }
   }
+
+  override fun setText(action: String) {
+    textView.text = action
+  }
 }

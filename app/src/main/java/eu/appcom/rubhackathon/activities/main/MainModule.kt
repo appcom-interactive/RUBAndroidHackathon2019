@@ -21,6 +21,11 @@ object MainModule {
   @JvmStatic
   @Provides
   @PerActivity
+  internal fun provideMainView(view: MainActivity): MainContract.MainView = view
+
+  @JvmStatic
+  @Provides
+  @PerActivity
   internal fun provideMainPresenter(presenter: MainPresenterImpl): MainContract.MainPresenter = presenter
 
 }

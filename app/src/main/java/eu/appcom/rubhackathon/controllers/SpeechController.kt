@@ -1,6 +1,6 @@
 package eu.appcom.rubhackathon.controllers
 
-import android.speech.RecognitionListener
+import io.reactivex.Observable
 
 /*
  * Created by appcom interactive GmbH on 26.01.19.
@@ -13,4 +13,6 @@ interface SpeechController {
   fun startSpeechRecognizer()
 
   fun stopSpeechRecognizer()
+
+  fun observe(): Observable<String>
 }
