@@ -5,6 +5,7 @@ import dagger.Provides
 import eu.appcom.rubhackathon.annotations.PerActivity
 import eu.appcom.rubhackathon.base.BaseActivity
 import eu.appcom.rubhackathon.di.ActivityModule
+import eu.appcom.rubhackathon.models.Flag
 
 /**
  * Created by appcom interactive GmbH on 26.01.19.
@@ -27,4 +28,9 @@ object GameModule {
   @Provides
   @PerActivity
   internal fun provideGamePresenter(presenterImpl: GamePresenterImpl): GameContract.GamePresenter = presenterImpl
+
+  @JvmStatic
+  @Provides
+  @PerActivity
+  internal fun provideFlag(activity: GameActivity): Flag = Flag(activity.intent.getBooleanExtra("tag", false))
 }

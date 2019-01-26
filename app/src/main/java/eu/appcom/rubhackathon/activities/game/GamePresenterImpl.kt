@@ -1,6 +1,5 @@
 package eu.appcom.rubhackathon.activities.game
 
-import android.annotation.SuppressLint
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import eu.appcom.rubhackathon.base.BasePresenterImpl
@@ -8,7 +7,9 @@ import eu.appcom.rubhackathon.controllers.CommandController
 import eu.appcom.rubhackathon.controllers.FirebaseDatabaseController
 import eu.appcom.rubhackathon.controllers.NoiseController
 import eu.appcom.rubhackathon.controllers.SpeechController
+import eu.appcom.rubhackathon.models.Flag
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
@@ -30,14 +31,8 @@ class GamePresenterImpl @Inject constructor() : BasePresenterImpl(), GameContrac
   @Inject
   lateinit var noiseController: NoiseController
 
-  @SuppressLint("CheckResult")
-  @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-  fun subscribeToCommandsValues() {
-    firebaseDatabaseController.getCommand()
-    firebaseDatabaseController.observe().subscribe {
-      executeCommand(it)
-    }
-  }
+  @Inject
+  lateinit var tag: Flag
 
   fun executeCommand(action: String) {
 //    view.showCommand(action)
@@ -46,15 +41,21 @@ class GamePresenterImpl @Inject constructor() : BasePresenterImpl(), GameContrac
 
   @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
   fun init() {
-    noiseController.start()
-//    if (speechController.isRecognitionAvailable) {
-//      speechController.startSpeechRecognizer()
-//      speechController.observe().subscribe(this::act)
-//    }
+    if (tag.flag) {
+      firebaseDatabaseController.getCommand()
+      firebaseDatabaseController.observe().subscribe {
+        executeCommand(it)
+      }
+    } else {
+      noiseController.start()
+    }
   }
 
+  private var disposable: Disposable? = null
+
   override fun onReady() {
-    noiseController.observe().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({ num ->
+    disposable = noiseController.observe().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+      .subscribe({ num ->
       checkNoise(num)
     }, { t ->
       Timber.e("error ${t.localizedMessage}")
@@ -76,17 +77,19 @@ class GamePresenterImpl @Inject constructor() : BasePresenterImpl(), GameContrac
     val option = commandController.translate(text)
     Timber.d("action $option")
     if (option == 0) {
-      view.down()
-    } else if (option == 1) {
       view.up()
+    } else if (option == 1) {
+      view.down()
     }
   }
 
   @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
   fun stop() {
-//    if (speechController.isRecognitionAvailable) {
-//      speechController.stopSpeechRecognizer()
-//    }
+    disposable?.dispose()
+    if (tag.flag) {
+    } else {
+      noiseController.stop()
+    }
   }
 
 }
