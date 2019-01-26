@@ -20,7 +20,7 @@ class FirebaseDatabaseControllerImpl @Inject constructor() : FirebaseDatabaseCon
 
   override fun saveCommand(action: String) {
     val ref = db.reference
-    ref.child("action").setValue(Action(action))
+    ref.child("action").setValue(Action(action, System.currentTimeMillis()))
   }
 
   override fun getCommand() {
