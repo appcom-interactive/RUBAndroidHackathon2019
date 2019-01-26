@@ -1,5 +1,6 @@
 package eu.appcom.rubhackathon.activities.game
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import eu.appcom.rubhackathon.base.BasePresenterImpl
@@ -24,26 +25,27 @@ class GamePresenterImpl @Inject constructor() : BasePresenterImpl(), GameContrac
   @Inject
   lateinit var firebaseDatabaseController: FirebaseDatabaseController
 
-//  @SuppressLint("CheckResult")
-//  @OnLifecycleEvent(ON_CREATE)
-//  fun subscribeToCommandsValues() {
-//    firebaseDatabaseController.getCommand()
-//    firebaseDatabaseController.observe().subscribe {
-//      executeCommand(it)
-//    }
-//  }
-
-  fun executeCommand(action: String) {
-    view.showCommand(action)
-  }
-
-  @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-  fun init() {
-    if (speechController.isRecognitionAvailable) {
-      speechController.startSpeechRecognizer()
-      speechController.observe().subscribe(this::act)
+  @SuppressLint("CheckResult")
+  @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+  fun subscribeToCommandsValues() {
+    firebaseDatabaseController.getCommand()
+    firebaseDatabaseController.observe().subscribe {
+      executeCommand(it)
     }
   }
+
+  fun executeCommand(action: String) {
+//    view.showCommand(action)
+    act(action)
+  }
+
+//  @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+//  fun init() {
+//    if (speechController.isRecognitionAvailable) {
+//      speechController.startSpeechRecognizer()
+//      speechController.observe().subscribe(this::act)
+//    }
+//  }
 
   private fun act(text: String) {
     val option = commandController.translate(text)
@@ -57,9 +59,9 @@ class GamePresenterImpl @Inject constructor() : BasePresenterImpl(), GameContrac
 
   @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
   fun stop() {
-    if (speechController.isRecognitionAvailable) {
-      speechController.stopSpeechRecognizer()
-    }
+//    if (speechController.isRecognitionAvailable) {
+//      speechController.stopSpeechRecognizer()
+//    }
   }
 
 }
