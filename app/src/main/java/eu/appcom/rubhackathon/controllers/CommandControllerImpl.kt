@@ -1,5 +1,6 @@
 package eu.appcom.rubhackathon.controllers
 
+import timber.log.Timber
 import javax.inject.Inject
 
 /*
@@ -8,19 +9,29 @@ import javax.inject.Inject
  */
 class CommandControllerImpl @Inject constructor() : CommandController {
 
-  override fun moveFasterPokey() {
+  override fun doAction(text: String) = when (text.toLowerCase()) {
+    "faster" -> moveFasterPokey()
+    "slower" -> moveSlowerPokey()
+    "top" -> jumpPokey()
+    "bottom" -> duckPokey()
+    else -> {
+      Timber.d("unkown $text")
+    }
+  }
 
+  override fun moveFasterPokey() {
+    Timber.d("moveFasterPokey")
   }
 
   override fun moveSlowerPokey() {
-
+    Timber.d("moveSlowerPokey")
   }
 
   override fun jumpPokey() {
-
+    Timber.d("jumpPokey")
   }
 
   override fun duckPokey() {
-
+    Timber.d("duckPokey")
   }
 }

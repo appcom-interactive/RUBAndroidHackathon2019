@@ -2,20 +2,18 @@ package eu.appcom.rubhackathon.controllers
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
-import android.speech.SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS
-import android.speech.SpeechRecognizer.ERROR_NETWORK
-import android.speech.SpeechRecognizer.ERROR_SERVER
-import android.speech.SpeechRecognizer.RESULTS_RECOGNITION
+import android.speech.SpeechRecognizer.*
 import eu.appcom.rubhackathon.listener.CustomRecognitionListener
 import eu.appcom.rubhackathon.listener.CustomSpeechListener
 import eu.appcom.rubhackathon.utils.Constants.ACTIVITY
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import timber.log.Timber
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -47,7 +45,6 @@ class SpeechControllerImpl @Inject constructor() : SpeechController, CustomSpeec
     subject = BehaviorSubject.create()
 
     startListing()
-
   }
 
   fun startListing() {
@@ -55,10 +52,14 @@ class SpeechControllerImpl @Inject constructor() : SpeechController, CustomSpeec
     intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
     intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, context.packageName)
 
-    intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
     intent.putExtra("android.speech.extra.DICTATION_MODE", true)
+    intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
 
-    intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 5000000)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      intent.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true)
+    }
+
+    intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 10000)
     intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 5000000)
 
 //    intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, MAX_RESULTS)

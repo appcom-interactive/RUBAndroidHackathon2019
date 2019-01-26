@@ -13,4 +13,6 @@ interface CommandController {
   fun jumpPokey()
 
   fun duckPokey()
+
+  fun doAction(text: String)
 }
