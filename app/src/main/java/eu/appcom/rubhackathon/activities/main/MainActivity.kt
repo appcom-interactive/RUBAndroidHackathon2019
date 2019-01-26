@@ -22,6 +22,8 @@ class MainActivity : BaseActivity(), MainContract.MainView {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
+    setSupportActionBar(main_toolbar)
+
     main_game_button.onClick {
       launchActivity<GameActivity> {}
     }
