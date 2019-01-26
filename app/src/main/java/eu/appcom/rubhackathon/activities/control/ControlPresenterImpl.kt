@@ -26,6 +26,7 @@ class ControlPresenterImpl @Inject constructor() : BasePresenterImpl(), ControlC
   @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
   fun addFirebaseValue(){
     firebaseDatabaseController.connectToDatabase()
+    firebaseDatabaseController.saveCommand("")
   }
 
   @Inject
