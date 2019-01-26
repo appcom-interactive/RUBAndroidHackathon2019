@@ -11,16 +11,16 @@ import eu.appcom.rubhackathon.extensions.launchActivity
 import eu.appcom.rubhackathon.extensions.onClick
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_main.main_control_button
-import kotlinx.android.synthetic.main.activity_main.main_game_button
-import kotlinx.android.synthetic.main.activity_main.main_toolbar
+import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 import javax.inject.Inject
 
 class MainActivity : BaseActivity(), MainContract.MainView {
 
-  @Inject lateinit var presenter: MainContract.MainPresenter
-  @Inject lateinit var bluetoothController: BluetoothController
+  @Inject
+  lateinit var presenter: MainContract.MainPresenter
+  @Inject
+  lateinit var bluetoothController: BluetoothController
 
   override fun providePresenter(): BaseContract.BasePresenter = presenter
 
@@ -42,7 +42,7 @@ class MainActivity : BaseActivity(), MainContract.MainView {
     }
 
     main_control_button.onClick {
-      launchActivity<ControlActivity> {  }
+      launchActivity<ControlActivity> { }
     }
   }
 }
