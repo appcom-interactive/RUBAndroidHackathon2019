@@ -1,7 +1,8 @@
-package eu.appcom.rubhackathon
+package eu.appcom.rubhackathon.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import eu.appcom.rubhackathon.R
 
 class MainActivity : AppCompatActivity() {
 
