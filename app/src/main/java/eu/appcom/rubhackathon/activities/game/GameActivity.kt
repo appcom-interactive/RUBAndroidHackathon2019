@@ -1,6 +1,8 @@
 package eu.appcom.rubhackathon.activities.game
 
 import android.annotation.SuppressLint
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Toast
 import eu.appcom.rubhackathon.R
 import eu.appcom.rubhackathon.base.BaseActivity
@@ -31,9 +33,14 @@ class GameActivity : BaseActivity(), GameContract.GameView {
 //    game_webview.loadUrl("file:///android_asset/game/index.html")
     game_webview.loadUrl("http://ndwebdesign.alfahosting.org/game/index.html")
 
+    game_webview.webViewClient = object : WebViewClient() {
+      override fun onPageFinished(view: WebView?, url: String?) {
+        presenter.onReady()
+      }
+    }
+
     up_button.onClick { up() }
     down_button.onClick { down() }
-
   }
 
   override fun up() {

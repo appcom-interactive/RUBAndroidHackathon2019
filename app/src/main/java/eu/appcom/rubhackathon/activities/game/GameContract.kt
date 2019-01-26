@@ -17,5 +17,7 @@ interface GameContract {
     fun showCommand(action:String)
   }
 
-  interface GamePresenter : BaseContract.BasePresenter
+  interface GamePresenter : BaseContract.BasePresenter {
+    fun onReady()
+  }
 }

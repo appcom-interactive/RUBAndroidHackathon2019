@@ -39,5 +39,10 @@ abstract class ControllerModule {
 
   @Binds
   @PerActivity
+  abstract fun bindNoiseController(noiseControllerImpl: NoiseControllerImpl): NoiseController
+
+  @Binds
+  @PerActivity
   abstract fun bindFirebaseDatabaseController(firebaseDatabaseControllerImpl: FirebaseDatabaseControllerImpl): FirebaseDatabaseController
+
 }
