@@ -3,15 +3,19 @@ package eu.appcom.rubhackathon.controllers
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import android.speech.SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS
+import android.speech.SpeechRecognizer.ERROR_NETWORK
+import android.speech.SpeechRecognizer.ERROR_SERVER
 import android.speech.SpeechRecognizer.RESULTS_RECOGNITION
+import eu.appcom.rubhackathon.listener.CustomRecognitionListener
+import eu.appcom.rubhackathon.listener.CustomSpeechListener
 import eu.appcom.rubhackathon.utils.Constants.ACTIVITY
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import timber.log.Timber
-import java.util.*
+import java.util.ArrayList
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -19,11 +23,7 @@ import javax.inject.Named
  * Created by appcom interactive GmbH on 26.01.19.
  * Copyright © 2019 appcom interactive GmbH. All rights reserved.
  */
-class SpeechControllerImpl @Inject constructor() : SpeechController, RecognitionListener {
-
-  companion object {
-    const val MAX_RESULTS = 5
-  }
+class SpeechControllerImpl @Inject constructor() : SpeechController, CustomSpeechListener {
 
   private lateinit var subject: BehaviorSubject<String>
 
@@ -42,7 +42,7 @@ class SpeechControllerImpl @Inject constructor() : SpeechController, Recognition
 
   override fun startSpeechRecognizer() {
     speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
-    speechRecognizer.setRecognitionListener(this)
+    speechRecognizer.setRecognitionListener(CustomRecognitionListener(this))
 
     subject = BehaviorSubject.create()
 
@@ -65,78 +65,33 @@ class SpeechControllerImpl @Inject constructor() : SpeechController, Recognition
     speechRecognizer.startListening(intent)
   }
 
-  override fun observe(): Observable<String> = subject
-
   override fun stopSpeechRecognizer() {
     speechRecognizer.stopListening()
     speechRecognizer.destroy()
   }
 
-  override fun onReadyForSpeech(params: Bundle?) {
-    // Timber.d("SpeechRecongnizer onReadyForSpeech %s", params.toString())
-  }
+  override fun observe(): Observable<String> = subject
 
-  override fun onRmsChanged(rmsdB: Float) {
-    // Timber.d("SpeechRecongnizer onRmsChanged %s", rmsdB.toString())
-  }
-
-  override fun onBufferReceived(buffer: ByteArray?) {
-    //  Timber.d("SpeechRecongnizer onBufferReceived %s", buffer.toString())
-  }
-
+  /*
+      CustomRecognitionListener
+   */
   override fun onPartialResults(partialResults: Bundle?) {
-//    Timber.d("SpeechRecongnizer partialResults %s", partialResults.toString())
+    getNewElementFromString(getResultsFromBundle(partialResults)[0])
 
-//    Timber.d("partial ${getResultsFromBundle(partialResults)}")
-    compute(getResultsFromBundle(partialResults)[0])
-
-  }
-
-  private fun compute(text: String) {
-    val list = text.split(" ")
-    val lastItem = list.last()
-    if (list.size > 1) {
-      val beforeItem = list[list.lastIndex - 1]
-      if (lastItem != beforeItem) {
-        Timber.d("action: $lastItem")
-        send(lastItem)
-      }
-    } else {
-      Timber.d("action: $lastItem")
-      send(lastItem)
-    }
-  }
-
-  private fun send(text: String) {
-    subject.onNext(text)
-  }
-
-  override fun onEvent(eventType: Int, params: Bundle?) {
-    // Tim
-    // er.d("SpeechRecongnizer onEvent %s and params: %s", eventType.toString(),params.toString())
-  }
-
-  override fun onBeginningOfSpeech() {
-    // Timber.d("SpeechRecongnizer onBeginningOfSpeech")
-  }
-
-  override fun onEndOfSpeech() {
-    //  Timber.d("SpeechRecongnizer onEndOfSpeech")
   }
 
   override fun onError(error: Int) {
-    Timber.d("SpeechRecongnizer onError %s", error.toString())
-//    startListing()
+    if (error == ERROR_INSUFFICIENT_PERMISSIONS || error == ERROR_NETWORK || error == ERROR_SERVER) {
+      Timber.d("SpeechRecongnizer onError do not restart")
+    } else {
+      Timber.d("SpeechRecongnizer onError: %s. Restart service", error.toString())
+      startListing()
+    }
   }
 
   override fun onResults(results: Bundle?) {
     Timber.d("SpeechRecongnizer onResults %s", results.toString())
-
-    getResultsFromBundle(results)?.forEach {
-      Timber.d("SpeechRecongnizer Result: %s", it)
-    }
-
-//    startListing()
+    startListing()
   }
 
   private fun getResultsFromBundle(results: Bundle?): ArrayList<String> {
@@ -147,10 +102,27 @@ class SpeechControllerImpl @Inject constructor() : SpeechController, Recognition
         return list
       }
     }
-//    if (results != null) {
-//      return results.getStringArrayList(RESULTS_RECOGNITION)
-//    }
     return arrayListOf()
+  }
+
+  private fun getNewElementFromString(text: String) {
+    val list = text.split(" ")
+    val lastItem = list.last()
+    if (list.size > 1) {
+      val beforeItem = list[list.lastIndex - 1]
+      if (lastItem != beforeItem) {
+        Timber.d("action: $lastItem")
+        sendCommand(lastItem)
+      }
+    } else {
+      Timber.d("action: $lastItem")
+      sendCommand(lastItem)
+    }
+  }
+
+  private fun sendCommand(text: String) {
+    Timber.d("SpeechRecongnizer nextCommand: %s", text)
+    subject.onNext(text)
   }
 
 }
