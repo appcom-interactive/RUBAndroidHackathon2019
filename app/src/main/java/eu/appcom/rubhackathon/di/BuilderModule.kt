@@ -2,8 +2,12 @@ package eu.appcom.rubhackathon.di
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import eu.appcom.rubhackathon.activities.game.GameActivity
+import eu.appcom.rubhackathon.activities.game.GameModule
 import eu.appcom.rubhackathon.activities.main.MainActivity
 import eu.appcom.rubhackathon.activities.main.MainModule
+import eu.appcom.rubhackathon.activities.settings.SettingsActivity
+import eu.appcom.rubhackathon.activities.settings.SettingsModule
 import eu.appcom.rubhackathon.annotations.PerActivity
 
 /**
@@ -16,6 +20,14 @@ abstract class ActivityBuilder {
   @PerActivity
   @ContributesAndroidInjector(modules = [MainModule::class])
   internal abstract fun mainInjector(): MainActivity
+
+  @PerActivity
+  @ContributesAndroidInjector(modules = [GameModule::class])
+  internal abstract fun gameInjector(): GameActivity
+
+  @PerActivity
+  @ContributesAndroidInjector(modules = [SettingsModule::class])
+  internal abstract fun settingsInjector(): SettingsActivity
 
 }
 

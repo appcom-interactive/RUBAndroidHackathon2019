@@ -1,17 +1,17 @@
 package eu.appcom.rubhackathon.controllers
 
 import android.content.Context
-import android.speech.RecognitionListener
-import android.speech.SpeechRecognizer
-import eu.appcom.rubhackathon.utils.Constants.ACTIVITY
-import timber.log.Timber
-import javax.inject.Inject
-import javax.inject.Named
-import android.speech.RecognizerIntent
 import android.content.Intent
 import android.os.Bundle
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
 import android.speech.SpeechRecognizer.RESULTS_RECOGNITION
-import java.util.ArrayList
+import eu.appcom.rubhackathon.utils.Constants.ACTIVITY
+import timber.log.Timber
+import java.util.*
+import javax.inject.Inject
+import javax.inject.Named
 
 /*
  * Created by appcom interactive GmbH on 26.01.19.
@@ -25,12 +25,14 @@ class SpeechControllerImpl @Inject constructor() : SpeechController, Recognition
 
   private lateinit var speechRecognizer: SpeechRecognizer
 
-  @Inject @field:Named(ACTIVITY) lateinit var context: Context
+  @Inject
+  @field:Named(ACTIVITY)
+  lateinit var context: Context
 
   override val isRecognitionAvailable: Boolean
     get() {
       val isAvailable = SpeechRecognizer.isRecognitionAvailable(context)
-      Timber.d("SpeechRecongnizer is available: %s",isAvailable.toString())
+      Timber.d("SpeechRecongnizer is available: %s", isAvailable.toString())
       return isAvailable
     }
 
@@ -42,12 +44,18 @@ class SpeechControllerImpl @Inject constructor() : SpeechController, Recognition
 
   }
 
-  fun startListing(){
+  fun startListing() {
     val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
     intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
     intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, context.packageName)
 
-    intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, MAX_RESULTS)
+    intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
+    intent.putExtra("android.speech.extra.DICTATION_MODE", true)
+
+    intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 5000000)
+    intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 5000000)
+
+//    intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, MAX_RESULTS)
     speechRecognizer.startListening(intent)
   }
 
@@ -58,37 +66,54 @@ class SpeechControllerImpl @Inject constructor() : SpeechController, Recognition
 
 
   override fun onReadyForSpeech(params: Bundle?) {
-   // Timber.d("SpeechRecongnizer onReadyForSpeech %s", params.toString())
+    // Timber.d("SpeechRecongnizer onReadyForSpeech %s", params.toString())
   }
 
   override fun onRmsChanged(rmsdB: Float) {
-   // Timber.d("SpeechRecongnizer onRmsChanged %s", rmsdB.toString())
+    // Timber.d("SpeechRecongnizer onRmsChanged %s", rmsdB.toString())
   }
 
   override fun onBufferReceived(buffer: ByteArray?) {
-  //  Timber.d("SpeechRecongnizer onBufferReceived %s", buffer.toString())
+    //  Timber.d("SpeechRecongnizer onBufferReceived %s", buffer.toString())
   }
 
   override fun onPartialResults(partialResults: Bundle?) {
-    Timber.d("SpeechRecongnizer partialResults %s", partialResults.toString())
+//    Timber.d("SpeechRecongnizer partialResults %s", partialResults.toString())
+
+//    Timber.d("partial ${getResultsFromBundle(partialResults)}")
+    compute(getResultsFromBundle(partialResults)[0])
+
+  }
+
+  private fun compute(text: String) {
+    val list = text.split(" ")
+    val lastItem = list.last()
+    if (list.size > 1) {
+      val beforeItem = list[list.lastIndex - 1]
+      if (lastItem != beforeItem) {
+        Timber.d("action: $lastItem")
+      }
+    } else {
+      Timber.d("action: $lastItem")
+    }
   }
 
   override fun onEvent(eventType: Int, params: Bundle?) {
-  // Tim
+    // Tim
     // er.d("SpeechRecongnizer onEvent %s and params: %s", eventType.toString(),params.toString())
   }
 
   override fun onBeginningOfSpeech() {
-   // Timber.d("SpeechRecongnizer onBeginningOfSpeech")
+    // Timber.d("SpeechRecongnizer onBeginningOfSpeech")
   }
 
   override fun onEndOfSpeech() {
-  //  Timber.d("SpeechRecongnizer onEndOfSpeech")
+    //  Timber.d("SpeechRecongnizer onEndOfSpeech")
   }
 
   override fun onError(error: Int) {
     Timber.d("SpeechRecongnizer onError %s", error.toString())
-    startListing()
+//    startListing()
   }
 
   override fun onResults(results: Bundle?) {
@@ -98,15 +123,21 @@ class SpeechControllerImpl @Inject constructor() : SpeechController, Recognition
       Timber.d("SpeechRecongnizer Result: %s", it)
     }
 
-    startListing()
-
+//    startListing()
   }
 
-  private fun getResultsFromBundle(results: Bundle?): ArrayList<String>? {
-    if(results!= null){
-      return results.getStringArrayList(RESULTS_RECOGNITION)
+  private fun getResultsFromBundle(results: Bundle?): ArrayList<String> {
+    results?.let {
+      val list = results.getStringArrayList(RESULTS_RECOGNITION)
+
+      list?.let {
+        return list
+      }
     }
-    return arrayListOf<String>()
+//    if (results != null) {
+//      return results.getStringArrayList(RESULTS_RECOGNITION)
+//    }
+    return arrayListOf()
   }
 
 }
