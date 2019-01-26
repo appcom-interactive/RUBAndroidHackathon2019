@@ -5,6 +5,8 @@ import dagger.Binds
 import dagger.Module
 import eu.appcom.rubhackathon.annotations.PerActivity
 import eu.appcom.rubhackathon.base.BaseActivity
+import eu.appcom.rubhackathon.controllers.BluetoothController
+import eu.appcom.rubhackathon.controllers.BluetoothControllerImpl
 import eu.appcom.rubhackathon.controllers.CommandController
 import eu.appcom.rubhackathon.controllers.CommandControllerImpl
 import eu.appcom.rubhackathon.controllers.SpeechController
@@ -35,4 +37,9 @@ abstract class ControllerModule {
   @Binds
   @PerActivity
   abstract fun bindSpeechController(speechControllerImpl: SpeechControllerImpl): SpeechController
+
+
+  @Binds
+  @PerActivity
+  abstract fun bindBluetoothController(speechControllerImpl: BluetoothControllerImpl): BluetoothController
 }
