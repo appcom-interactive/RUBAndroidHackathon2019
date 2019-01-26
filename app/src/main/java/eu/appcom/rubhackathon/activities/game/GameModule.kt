@@ -3,6 +3,7 @@ package eu.appcom.rubhackathon.activities.game
 import dagger.Module
 import dagger.Provides
 import eu.appcom.rubhackathon.annotations.PerActivity
+import eu.appcom.rubhackathon.base.BaseActivity
 import eu.appcom.rubhackathon.di.ActivityModule
 
 /**
@@ -11,6 +12,16 @@ import eu.appcom.rubhackathon.di.ActivityModule
  */
 @Module(includes = [ActivityModule::class])
 object GameModule {
+
+  @JvmStatic
+  @Provides
+  @PerActivity
+  internal fun provideBaseActivity(activity: GameActivity): BaseActivity = activity
+
+  @JvmStatic
+  @Provides
+  @PerActivity
+  internal fun provideView(activity: GameActivity): GameContract.GameView = activity
 
   @JvmStatic
   @Provides

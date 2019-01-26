@@ -8,7 +8,12 @@ import eu.appcom.rubhackathon.base.BaseContract
  */
 interface GameContract {
 
-  interface GameView : BaseContract.BaseView
+  interface GameView : BaseContract.BaseView {
+
+    fun up()
+
+    fun down()
+  }
 
   interface GamePresenter : BaseContract.BasePresenter
 }
