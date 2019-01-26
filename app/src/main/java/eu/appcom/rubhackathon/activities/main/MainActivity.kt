@@ -40,4 +40,18 @@ class MainActivity : BaseActivity(), MainContract.MainView {
     }
   }
 
+  override fun onResume() {
+    super.onResume()
+    talk_button.setOnClickListener {
+      presenter.startSpeechRecognizer()
+    }
+
+    stop_button.setOnClickListener {
+      presenter.stopSpeechRecognizer()
+    }
+  }
+
+  override fun setText(action: String) {
+    textView.text = action
+  }
 }
