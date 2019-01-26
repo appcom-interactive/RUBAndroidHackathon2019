@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <Button
+      android:id="@+id/control_talk_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="8dp"
+      android:layout_gravity="center"
+      android:text="@string/talk_button"
+      />
+
+  <Button
+      android:id="@+id/control_stop_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="8dp"
+      android:layout_gravity="center"
+      android:text="@string/stop_button"
+      />
+
+  <TextView
+      android:id="@+id/control_command_info_textview"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="32dp"
+      android:layout_gravity="center"
+      android:textSize="24sp"
+      />
+</LinearLayout>
